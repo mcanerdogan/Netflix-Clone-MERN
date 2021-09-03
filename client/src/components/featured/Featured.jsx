@@ -1,7 +1,28 @@
 import { InfoOutlined, PlayArrow } from "@material-ui/icons";
+import { useState, useEffect } from "react";
 import "./featured.scss";
+import axios from "axios";
 
 export default function Featured({ type }) {
+  const [content, setContent] = useState({});
+
+  useEffect(() => {
+    const getRandomContent = async () => {
+      try {
+        const res = await axios.get(`/movies/random?type=${type}`, {
+          headers: {
+            token:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY3NTJlNDQ4NzQ1N2FjZGE4ZTk0MiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDY1MzA1NywiZXhwIjoxNjMxMDg1MDU3fQ.CDnEWniTe-8sLLXgR9PSD5wAU-R7HrsVDsBgdemvADI",
+          },
+        });
+        setContent(res.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getRandomContent();
+  }, [type]);
+  
   return (
     <div className="featured">
       {type && (
@@ -25,22 +46,10 @@ export default function Featured({ type }) {
           </select>
         </div>
       )}
-      <img
-        width="100%"
-        src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-        alt=""
-      />
+      <img src={content.img} alt="" />
       <div className="info">
-        <img
-          src="https://images.indianexpress.com/2017/12/lord-of-the-rings-759.jpg"
-          alt=""
-        />
-        <span className="desc">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, vel
-          quis? Reiciendis, earum! Sapiente reprehenderit, ab impedit dolorem
-          natus aliquid laboriosam velit quibusdam. Ducimus, similique fuga at
-          maiores quam dolor?
-        </span>
+        <img src={content.imgTitle} alt="" />
+        <span className="desc">{content.desc}</span>
         <div className="buttons">
           <button className="play">
             <PlayArrow />
